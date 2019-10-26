@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "baseUrl": "./src",
+    "outDir": "./dist"
+  },
+  "compileOnSave": true,
+  "include": [
+    "./src/*",
+    "./src/**/*"
+  ]
+}

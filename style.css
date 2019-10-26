@@ -1,0 +1,27 @@
+.item {
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    position: absolute;
+}
+
+.item:hover {
+    background-color: #ddddff;
+}
+
+.selected {
+    border-width: 2px;
+}
+
+#mapa {
+    width: 500px;
+    height: 500px;
+    background-color: #dddddd;
+}
+
+#selection {
+    background-color: #ddddff99;
+    border: 1px solid #ddddff;
+    display: none;
+    position: absolute;
+}

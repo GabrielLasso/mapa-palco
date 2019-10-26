@@ -1,0 +1,20 @@
+{
+  "name": "mapa-palco",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "author": "GabrielLasso",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "gh-pages": "^2.1.1",
+    "typescript": "^3.6.4"
+  }
+}
