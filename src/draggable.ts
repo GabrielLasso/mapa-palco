@@ -1,5 +1,5 @@
-import {clearSelection, selectElement} from './selection'
-import {mapa} from './global'
+import { clearSelection, selectElement } from './selection'
+import { mapa } from './global'
 
 export function makeDraggable(element: HTMLElement) {
     element.onmousedown = (event) => {

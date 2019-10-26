@@ -1,5 +1,9 @@
 import { mapa } from './global'
 
+let startingX: number
+let startingY: number
+let isSelecting: boolean = false
+
 function interscts(r1: ClientRect, r2: ClientRect): boolean {
     if (r1.left + r1.width >= r2.left &&
         r1.left <= r2.left + r2.width &&
@@ -22,11 +26,6 @@ function querySelectorRect(query: string, r: ClientRect): NodeListOf<HTMLElement
 
     return filteredList as unknown as NodeListOf<HTMLElement>
 }
-
-// Select
-let startingX: number
-let startingY: number
-let isSelecting: boolean = false
 
 export function selectElement(element: HTMLElement) {
     element.classList.add('selected')
