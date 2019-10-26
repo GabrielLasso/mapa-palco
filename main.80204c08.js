@@ -7,4 +7,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"./selection":"oCye","./global":"vqFm"}],"jP6t":[function(require,module,exports) {
 "use strict";var e=require("./global"),a=require("./selection"),r=require("./draggable");window.onload=function(){document.querySelectorAll(".draggable").forEach(r.makeDraggable),(0,e.setMapa)(document.getElementById("mapa")),(0,a.initSelection)()};
 },{"./global":"vqFm","./selection":"oCye","./draggable":"VlHH"}]},{},["jP6t"], null)
-//# sourceMappingURL=/main.80204c08.js.map
+//# sourceMappingURL=main.80204c08.js.map
