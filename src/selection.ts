@@ -61,7 +61,7 @@ export function initSelection() {
             selection.style.height = height + 'px'
             selection.style.width = width + 'px'
             clearSelection()
-            querySelectorRect('.draggable', selection.getBoundingClientRect()).forEach(selectElement)
+            querySelectorRect('.taiko', selection.getBoundingClientRect()).forEach(selectElement)
         }
 
         function onMouseUp(mouseUp: MouseEvent) {
