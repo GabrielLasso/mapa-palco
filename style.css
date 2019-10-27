@@ -42,7 +42,8 @@
         #000 132px
     );
     background-size: 132px 132px;
-    border: 1px solid black
+    border: 1px solid black;
+    position: relative;
 }
 
 #selection {

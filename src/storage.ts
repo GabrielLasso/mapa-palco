@@ -21,12 +21,13 @@ export function save() {
             x : element.offsetLeft + element.offsetWidth / 2 - map.offsetWidth / 2,
             y : element.offsetTop + element.offsetHeight / 2 - map.offsetHeight / 2
         })
-    })
-    document.getElementById('json').textContent = JSON.stringify(data)
+    });
+    (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data)
 }
 
 export function load() {
-    let json = document.getElementById('json').textContent
+    let json = (document.getElementById('json') as HTMLTextAreaElement).value
+    console.log(json)
     let data : SaveData = JSON.parse(json)
     initMap(data.map.height, data.map.width)
     data.instruments.forEach((instrument) => {
