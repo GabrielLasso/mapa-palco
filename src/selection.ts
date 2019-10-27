@@ -1,4 +1,4 @@
-import { mapa } from './global'
+import { map } from './global'
 
 let startingX: number
 let startingY: number
@@ -15,7 +15,7 @@ function interscts(r1: ClientRect, r2: ClientRect): boolean {
 }
 
 function querySelectorRect(query: string, r: ClientRect): NodeListOf<HTMLElement> {
-    let elements = mapa.querySelectorAll(query)
+    let elements = map.querySelectorAll(query)
 
     let filteredList = []
     elements.forEach((element) => {
@@ -32,15 +32,15 @@ export function selectElement(element: HTMLElement) {
 }
 
 export function clearSelection() {
-    for (let index = 0; index < mapa.children.length; index++) {
-        mapa.children.item(index).classList.remove('selected')
+    for (let index = 0; index < map.children.length; index++) {
+        map.children.item(index).classList.remove('selected')
     }
 }
 
 export function initSelection() {
     let selection = document.getElementById("selection")
-    mapa.onmousedown = (mouseDown) => {
-        if ((mouseDown.target as HTMLElement).id != 'mapa') {
+    map.onmousedown = (mouseDown) => {
+        if ((mouseDown.target as HTMLElement).id != 'map') {
             return
         }
         clearSelection()

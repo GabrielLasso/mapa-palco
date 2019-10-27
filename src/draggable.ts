@@ -1,5 +1,5 @@
 import { clearSelection, selectElement } from './selection'
-import { mapa } from './global'
+import { map } from './global'
 
 export function makeDraggable(element: HTMLElement) {
     element.onmousedown = (event) => {
@@ -15,17 +15,17 @@ export function makeDraggable(element: HTMLElement) {
             let newLeft = event.clientX - shiftX
             let newTop = event.clientY - shiftY
 
-            if (newLeft < mapa.getBoundingClientRect().left) {
-                newLeft = mapa.getBoundingClientRect().left
+            if (newLeft < map.getBoundingClientRect().left) {
+                newLeft = map.getBoundingClientRect().left
             }
-            if (newTop < mapa.getBoundingClientRect().top) {
-                newTop = mapa.getBoundingClientRect().top
+            if (newTop < map.getBoundingClientRect().top) {
+                newTop = map.getBoundingClientRect().top
             }
-            let rightEdge = mapa.getBoundingClientRect().left + mapa.offsetWidth - element.offsetWidth
+            let rightEdge = map.getBoundingClientRect().left + map.offsetWidth - element.offsetWidth
             if (newLeft > rightEdge) {
                 newLeft = rightEdge
             }
-            let bottomEdge = mapa.getBoundingClientRect().top + mapa.offsetHeight - element.offsetHeight
+            let bottomEdge = map.getBoundingClientRect().top + map.offsetHeight - element.offsetHeight
             if (newTop > bottomEdge) {
                 newTop = bottomEdge
             }
