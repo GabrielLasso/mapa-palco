@@ -32,7 +32,9 @@ export function selectElement(element: HTMLElement) {
 }
 
 export function clearSelection() {
-    mapa.querySelectorAll('.draggable').forEach((e) => e.classList.remove('selected'))
+    for (let index = 0; index < mapa.children.length; index++) {
+        mapa.children.item(index).classList.remove('selected')
+    }
 }
 
 export function initSelection() {
