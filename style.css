@@ -18,6 +18,28 @@
     width: 500px;
     height: 500px;
     background-color: #dddddd;
+    background: repeating-linear-gradient(
+        0deg,
+        #000,
+        #000 1px,
+        #fff0 1px,
+        #fff0 66px,
+        #000 66px,
+        #000 68px,
+        #fff0 67px,
+        #fff0 132px
+    ), 
+    repeating-linear-gradient(
+        90deg,
+        #000,
+        #000 1px,
+        #fff0 1px,
+        #fff0 66px,
+        #000 66px,
+        #000 68px,
+        #fff0 67px,
+        #fff0 132px
+    );
 }
 
 #selection {
