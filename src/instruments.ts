@@ -1,10 +1,16 @@
 import { makeDraggable } from './draggable'
 
-export enum Instrument {
+export enum InstrumentType {
     Okedo = 'okedo'
 }
 
-export function createInstrument(instrument : Instrument, mapa : HTMLElement, x : number, y : number) {
+export interface Instrument {
+    type : InstrumentType,
+    x : number,
+    y : number
+}
+
+export function createInstrument(instrument : InstrumentType, mapa : HTMLElement, x : number, y : number) {
     let newInstrument = document.createElement("div")
     newInstrument.classList.add(instrument)
     newInstrument.classList.add('taiko')
