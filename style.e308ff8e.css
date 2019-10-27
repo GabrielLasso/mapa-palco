@@ -1,0 +1,56 @@
+.okedo {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.okedo:hover {
+    background-color: #ddddff99;
+}
+
+.selected {
+    border-width: 2px;
+}
+
+#map {
+    width: 500px;
+    height: 500px;
+    background-color: #dddddd;
+    background: repeating-linear-gradient(
+        0deg,
+        #000,
+        #000 1px,
+        #fff0 1px,
+        #fff0 66px,
+        #000 66px,
+        #000 68px,
+        #fff0 67px,
+        #fff0 132px
+    ), 
+    repeating-linear-gradient(
+        90deg,
+        #000,
+        #000 1px,
+        #fff0 1px,
+        #fff0 66px,
+        #000 66px,
+        #000 68px,
+        #fff0 67px,
+        #fff0 132px
+    );
+}
+
+#selection {
+    background-color: #ddddff99;
+    border: 1px solid #ddddff;
+    display: none;
+    position: absolute;
+}
+
+.hidden {
+    display: none;
+}
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */
