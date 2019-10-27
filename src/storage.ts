@@ -27,7 +27,6 @@ export function save() {
 
 export function load() {
     let json = (document.getElementById('json') as HTMLTextAreaElement).value
-    console.log(json)
     let data : SaveData = JSON.parse(json)
     initMap(data.map.height, data.map.width)
     data.instruments.forEach((instrument) => {
