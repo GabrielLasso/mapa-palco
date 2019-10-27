@@ -12,4 +12,7 @@ export function initMap(height : number, width : number) {
     })
     map.style.height = height * meter + 'px'
     map.style.width = width * meter + 'px'
+    map.style.backgroundPositionX = Math.round(width * meter / 2) + 'px'
+    map.style.backgroundPositionY = Math.round(height * meter / 2) + 'px'
+
 }

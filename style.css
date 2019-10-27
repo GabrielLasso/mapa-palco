@@ -15,31 +15,29 @@
 }
 
 #map {
-    width: 500px;
-    height: 500px;
-    background-color: #dddddd;
-    background: repeating-linear-gradient(
+    background: linear-gradient(
         0deg,
         #000,
-        #000 1px,
-        #fff0 1px,
+        #000 2px,
+        #fff0 2px,
         #fff0 66px,
         #000 66px,
-        #000 68px,
+        #000 66px,
         #fff0 67px,
         #fff0 132px
     ), 
-    repeating-linear-gradient(
+    linear-gradient(
         90deg,
         #000,
-        #000 1px,
-        #fff0 1px,
+        #000 2px,
+        #fff0 2px,
         #fff0 66px,
         #000 66px,
-        #000 68px,
+        #000 66px,
         #fff0 67px,
         #fff0 132px
     );
+    background-size: 132px 132px;
 }
 
 #selection {
