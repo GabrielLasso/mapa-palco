@@ -8,10 +8,12 @@ interface SaveData {
 }
 
 export function save() {
+    let height = parseInt(map.getAttribute('data-height'))
+    let width = parseInt(map.getAttribute('data-width'))
     let data : SaveData = {
         map : {
-            height : 8.0,
-            width : 12.0
+            height : height,
+            width : width
         },
         instruments : Array<InstrumentData>()
     }

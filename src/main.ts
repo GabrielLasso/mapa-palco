@@ -20,3 +20,9 @@ document.getElementById('export').onclick = (event) => {
 document.getElementById('import').onclick = (event) => {
     load()
 }
+
+document.getElementById('new').onclick = (event) => {
+    let height = parseInt((document.getElementById('height') as HTMLInputElement).value)
+    let width = parseInt((document.getElementById('width') as HTMLInputElement).value)
+    initMap(height, width)
+}
