@@ -194,8 +194,8 @@ function initSelection() {
 
     clearSelection();
     isSelecting = true;
-    startingX = mouseDown.clientX;
-    startingY = mouseDown.clientY;
+    startingX = mouseDown.clientX - _global.map.offsetLeft;
+    startingY = mouseDown.clientY - _global.map.offsetTop;
     selection.style.display = 'block';
     selection.style.left = startingX + 'px';
     selection.style.top = startingY + 'px';
@@ -203,10 +203,29 @@ function initSelection() {
     selection.style.width = '0px';
 
     function onMouseMove(mouseMove) {
-      var width = Math.abs(startingX - mouseMove.clientX);
-      var height = Math.abs(startingY - mouseMove.clientY);
-      selection.style.left = Math.min(startingX, mouseMove.clientX) + 'px';
-      selection.style.top = Math.min(startingY, mouseMove.clientY) + 'px';
+      var x = mouseMove.clientX - _global.map.offsetLeft;
+      var y = mouseMove.clientY - _global.map.offsetTop;
+
+      if (x < 0) {
+        x = 0;
+      }
+
+      if (y < 0) {
+        y = 0;
+      }
+
+      if (x > _global.map.offsetWidth) {
+        x = _global.map.offsetWidth;
+      }
+
+      if (y > _global.map.offsetHeight) {
+        y = _global.map.offsetHeight;
+      }
+
+      var width = Math.abs(startingX - x);
+      var height = Math.abs(startingY - y);
+      selection.style.left = Math.min(startingX, x) + 'px';
+      selection.style.top = Math.min(startingY, y) + 'px';
       selection.style.height = height + 'px';
       selection.style.width = width + 'px';
       clearSelection();
@@ -239,8 +258,8 @@ var _global = require("./global");
 function makeDraggable(element) {
   element.onmousedown = function (event) {
     event.preventDefault();
-    var shiftX = event.clientX - element.getBoundingClientRect().left;
-    var shiftY = event.clientY - element.getBoundingClientRect().top;
+    var shiftX = event.clientX - element.offsetLeft;
+    var shiftY = event.clientY - element.offsetTop;
     (0, _selection.clearSelection)();
     (0, _selection.selectElement)(element);
 
@@ -248,21 +267,21 @@ function makeDraggable(element) {
       var newLeft = event.clientX - shiftX;
       var newTop = event.clientY - shiftY;
 
-      if (newLeft < _global.map.getBoundingClientRect().left) {
-        newLeft = _global.map.getBoundingClientRect().left;
+      if (newLeft < 0) {
+        newLeft = 0;
       }
 
-      if (newTop < _global.map.getBoundingClientRect().top) {
-        newTop = _global.map.getBoundingClientRect().top;
+      if (newTop < 0) {
+        newTop = 0;
       }
 
-      var rightEdge = _global.map.getBoundingClientRect().left + _global.map.offsetWidth - element.offsetWidth;
+      var rightEdge = _global.map.offsetWidth - element.offsetWidth;
 
       if (newLeft > rightEdge) {
         newLeft = rightEdge;
       }
 
-      var bottomEdge = _global.map.getBoundingClientRect().top + _global.map.offsetHeight - element.offsetHeight;
+      var bottomEdge = _global.map.offsetHeight - element.offsetHeight;
 
       if (newTop > bottomEdge) {
         newTop = bottomEdge;
@@ -332,6 +351,12 @@ function initMap(height, width) {
 
   _global.map.style.height = height * _global.meter + 'px';
   _global.map.style.width = width * _global.meter + 'px';
+  _global.map.style.backgroundPositionX = Math.round(width * _global.meter / 2) + 'px';
+  _global.map.style.backgroundPositionY = Math.round(height * _global.meter / 2) + 'px';
+
+  _global.map.setAttribute('data-height', height.toString());
+
+  _global.map.setAttribute('data-width', width.toString());
 }
 },{"./global":"src/global.ts"}],"src/storage.ts":[function(require,module,exports) {
 "use strict";
@@ -349,10 +374,12 @@ var _map = require("./map");
 var _instruments = require("./instruments");
 
 function save() {
+  var height = parseInt(_global.map.getAttribute('data-height'));
+  var width = parseInt(_global.map.getAttribute('data-width'));
   var data = {
     map: {
-      height: 8.0,
-      width: 12.0
+      height: height,
+      width: width
     },
     instruments: Array()
   };
@@ -365,11 +392,11 @@ function save() {
     });
   });
 
-  document.getElementById('json').textContent = JSON.stringify(data);
+  document.getElementById('json').value = JSON.stringify(data);
 }
 
 function load() {
-  var json = document.getElementById('json').textContent;
+  var json = document.getElementById('json').value;
   var data = JSON.parse(json);
   (0, _map.initMap)(data.map.height, data.map.width);
   data.instruments.forEach(function (instrument) {
@@ -405,6 +432,12 @@ document.getElementById('export').onclick = function (event) {
 document.getElementById('import').onclick = function (event) {
   (0, _storage.load)();
 };
+
+document.getElementById('new').onclick = function (event) {
+  var height = parseInt(document.getElementById('height').value);
+  var width = parseInt(document.getElementById('width').value);
+  (0, _map.initMap)(height, width);
+};
 },{"./global":"src/global.ts","./selection":"src/selection.ts","./instruments":"src/instruments.ts","./map":"src/map.ts","./storage":"src/storage.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -433,7 +466,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45905" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46453" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
