@@ -1,0 +1,29 @@
+.selected {
+  border-width: 2px;
+  background-color: #ddddffbb;
+}
+#selection {
+  background-color: #ddddff99;
+  border: 1px solid #ddddff;
+  display: none;
+  position: absolute;
+}
+
+.okedo {
+  border: 1px solid black;
+  border-radius: 50%;
+  position: absolute;
+}
+.okedo:hover {
+  background-color: #ddddff99;
+}
+
+#map {
+  background: linear-gradient(0deg, #000, #000 1px, #fff0 1px, #fff0 66px, #000 66px, #000 66px, #fff0 67px, #fff0 131px, #000 131px, #000 132px), linear-gradient(90deg, #000, #000 1px, #fff0 1px, #fff0 66px, #000 66px, #000 66px, #fff0 67px, #fff0 131px, #000 131px, #000 132px);
+  background-size: 132px 132px;
+  border: 1px solid black;
+  position: relative;
+}
+
+
+/*# sourceMappingURL=/main.b0a109ad.css.map */
