@@ -1,6 +1,6 @@
 import { map } from './global'
 import { MapData, initMap } from './map'
-import { InstrumentData, InstrumentType, createInstrument } from './instruments'
+import { InstrumentData, InstrumentType, createInstrument, getInstruments } from './instruments'
 import { encode, decode } from 'json-lzw'
 
 interface SaveData {
@@ -9,24 +9,18 @@ interface SaveData {
 }
 
 export function save() {
-    let height = parseInt(map.getAttribute('data-height'))
-    let width = parseInt(map.getAttribute('data-width'))
+    let height = parseInt(map.getAttribute('data-height'));
+    let width = parseInt(map.getAttribute('data-width'));
     let data : SaveData = {
         map : {
             height : height,
             width : width
         },
-        instruments : Array<InstrumentData>()
-    }
-    map.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
-        data.instruments.push({
-            type : element.getAttribute('data-type') as InstrumentType,
-            x : element.offsetLeft + element.offsetWidth / 2 - map.offsetWidth / 2,
-            y : element.offsetTop + element.offsetHeight / 2 - map.offsetHeight / 2
-        })
-    });
+        instruments : getInstruments()
+    };
+    console.log(getInstruments());
     (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data);
-    (document.getElementById('min-json') as HTMLTextAreaElement).value = encode(JSON.stringify(data))
+    (document.getElementById('min-json') as HTMLTextAreaElement).value = encode(JSON.stringify(data));
 }
 
 export function load() {

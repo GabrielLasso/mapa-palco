@@ -1,5 +1,6 @@
 import { setMap, map, meter } from './global'
 import '../style/map.less'
+import { clearInstruments } from './instruments'
 
 export interface MapData {
     height : number,
@@ -8,9 +9,7 @@ export interface MapData {
 
 export function initMap(height : number, width : number) {
     setMap(document.getElementById("map"))
-    map.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
-        element.remove()
-    })
+    clearInstruments(map)
     map.style.height = height * meter + 'px'
     map.style.width = width * meter + 'px'
     map.style.backgroundPositionX = Math.round(width * meter / 2) + 'px'

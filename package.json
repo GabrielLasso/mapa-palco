@@ -17,7 +17,6 @@
   "dependencies": {
     "gh-pages": "^2.1.1",
     "json-lzw": "^0.3.2",
-    "s": "^1.0.0",
     "typescript": "^3.6.4"
   }
 }
