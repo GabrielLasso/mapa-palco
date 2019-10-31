@@ -1,4 +1,5 @@
 import { setMap, map, meter } from './global'
+import '../style/map.less'
 
 export interface MapData {
     height : number,

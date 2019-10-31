@@ -1,4 +1,5 @@
 import { map } from './global'
+import '../style/selection.less'
 
 let startingX: number
 let startingY: number

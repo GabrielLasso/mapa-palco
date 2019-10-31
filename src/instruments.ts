@@ -1,4 +1,5 @@
 import { makeDraggable } from './draggable'
+import '../style/instruments.less'
 
 export enum InstrumentType {
     Okedo = 'okedo'
