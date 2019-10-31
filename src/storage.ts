@@ -1,6 +1,7 @@
 import { map } from './global'
 import { MapData, initMap } from './map'
 import { InstrumentData, InstrumentType, createInstrument } from './instruments'
+import { encode, decode } from 'json-lzw'
 
 interface SaveData {
     map : MapData,
