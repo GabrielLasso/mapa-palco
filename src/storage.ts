@@ -1,6 +1,6 @@
-import { map } from './global'
+import { map, shaku } from './global'
 import { MapData, initMap } from './map'
-import { InstrumentData, InstrumentType, createInstrument, getInstruments } from './instruments'
+import { InstrumentData, InstrumentType, createInstrument } from './instruments'
 import { encode, decode } from 'json-lzw'
 
 interface SaveData {
@@ -16,9 +16,17 @@ export function save() {
             height : height,
             width : width
         },
-        instruments : getInstruments()
+        instruments : Array<InstrumentData>()
     };
-    console.log(getInstruments());
+    document.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
+        data.instruments.push({
+            type : element.getAttribute('data-type') as InstrumentType,
+            x : element.offsetLeft + element.clientWidth / 2 - map.clientWidth / 2,
+            y : element.offsetTop + element.clientHeight / 2 - map.clientHeight / 2,
+            alpha : 0,
+            diameter : element.clientWidth / shaku
+        })
+    });
     (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data);
     (document.getElementById('min-json') as HTMLTextAreaElement).value = encode(JSON.stringify(data));
 }
@@ -28,6 +36,6 @@ export function load() {
     let data : SaveData = JSON.parse(json)
     initMap(data.map.height, data.map.width)
     data.instruments.forEach((instrument) => {
-        createInstrument(instrument.type, map, instrument.x, instrument.y)
+        createInstrument(instrument.type, map, instrument.x, instrument.y, instrument.alpha, instrument.diameter)
     })
 }

@@ -10,7 +10,7 @@ window.onload = () => {
 }
 
 document.getElementById('add').onclick = (event) => {
-    createInstrument(InstrumentType.Okedo, map, 0, 0, 1.5)
+    createInstrument(InstrumentType.Okedo, map, 0, 0, 0, 1.5)
 }
 
 document.getElementById('export').onclick = (event) => {

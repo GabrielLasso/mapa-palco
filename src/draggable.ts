@@ -21,17 +21,17 @@ export function makeDraggable(element: HTMLElement) {
             if (newTop < 0) {
                 newTop = 0
             }
-            let rightEdge = map.offsetWidth - element.offsetWidth
+            let rightEdge = map.clientWidth - element.clientWidth
             if (newLeft > rightEdge) {
                 newLeft = rightEdge
             }
-            let bottomEdge = map.offsetHeight - element.offsetHeight
+            let bottomEdge = map.clientHeight - element.clientHeight
             if (newTop > bottomEdge) {
                 newTop = bottomEdge
             }
 
-            element.style.left = newLeft + window.pageXOffset + 'px'
-            element.style.top = newTop + window.pageYOffset + 'px'
+            element.style.left = newLeft + 'px'
+            element.style.top = newTop + 'px'
         }
 
         function onMouseUp() {

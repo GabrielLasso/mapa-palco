@@ -46,8 +46,8 @@ export function initSelection() {
         }
         clearSelection()
         isSelecting = true
-        startingX = mouseDown.clientX - map.offsetLeft
-        startingY = mouseDown.clientY - map.offsetTop
+        startingX = mouseDown.clientX - map.offsetLeft + window.pageXOffset
+        startingY = mouseDown.clientY - map.offsetTop + window.pageYOffset
         selection.style.display = 'block'
         selection.style.left = startingX + 'px'
         selection.style.top = startingY + 'px'
@@ -55,8 +55,8 @@ export function initSelection() {
         selection.style.width = '0px'
 
         function onMouseMove(mouseMove: MouseEvent) {
-            let x = mouseMove.clientX - map.offsetLeft
-            let y = mouseMove.clientY - map.offsetTop
+            let x = mouseMove.clientX - map.offsetLeft + window.pageXOffset
+            let y = mouseMove.clientY - map.offsetTop + window.pageYOffset
             if (x < 0) {
                 x = 0
             }

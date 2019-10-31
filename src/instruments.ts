@@ -14,36 +14,21 @@ export interface InstrumentData {
     diameter : number
 }
 
-export function createInstrument(instrument : InstrumentType, map : HTMLElement, x : number, y : number, diameter : number) {
-    let newInstrument = <InstrumentData>{
-        type : instrument,
-        x : x,
-        y : y,
-        alpha : 0,
-        diameter : diameter
-    }
-    let element = document.createElement("div")
-    element.classList.add(instrument)
-    element.classList.add('taiko')
-    element.setAttribute('data-type', instrument)
-    element.style.height = diameter * shaku + 'px'
-    element.style.width = diameter * shaku + 'px'
-    element.style.left = map.offsetWidth / 2 - diameter * shaku / 2 + x + 'px'
-    element.style.top = map.offsetHeight / 2 - diameter * shaku / 2 + y + 'px'
-    makeDraggable(element)
-    map.append(element)
-    
-    instruments.push(newInstrument)
+export function createInstrument(instrument : InstrumentType, map : HTMLElement, x : number, y : number, alpha : number, diameter : number) {
+    let newInstrument = document.createElement("div")
+    newInstrument.classList.add(instrument)
+    newInstrument.classList.add('taiko')
+    newInstrument.setAttribute('data-type', instrument)
+    newInstrument.style.height = diameter * shaku + 'px'
+    newInstrument.style.width = diameter * shaku + 'px'
+    newInstrument.style.left = map.clientWidth / 2 - diameter * shaku / 2 + x + 'px'
+    newInstrument.style.top = map.clientHeight / 2 - diameter * shaku / 2 + y + 'px'
+    makeDraggable(newInstrument)
+    map.append(newInstrument)
 }
 
 export function clearInstruments(map : HTMLElement) {
-    instruments = []
     map.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
         element.remove()
     })
-}
-
-var instruments = Array<InstrumentData>()
-export function getInstruments() : Array<InstrumentData> {
-    return instruments
 }
