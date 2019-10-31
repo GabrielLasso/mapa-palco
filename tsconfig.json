@@ -3,11 +3,9 @@
     "target": "es5",
     "module": "es2015",
     "baseUrl": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "compileOnSave": true,
-  "include": [
-    "./src/*",
-    "./src/**/*"
-  ]
+  "exclude": ["./types"]
 }

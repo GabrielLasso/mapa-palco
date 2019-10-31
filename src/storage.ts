@@ -25,7 +25,8 @@ export function save() {
             y : element.offsetTop + element.offsetHeight / 2 - map.offsetHeight / 2
         })
     });
-    (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data)
+    (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data);
+    (document.getElementById('min-json') as HTMLTextAreaElement).value = encode(JSON.stringify(data))
 }
 
 export function load() {
