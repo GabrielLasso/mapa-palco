@@ -117,28 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/global.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.setMap = setMap;
-exports.meter = exports.shaku = exports.map = void 0;
-var map;
-exports.map = map;
-
-function setMap(element) {
-  exports.map = map = element;
-}
-
-var shaku = 20; // px
-
-exports.shaku = shaku;
-var meter = 3.3 * shaku; // px
-
-exports.meter = meter;
-},{}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+})({"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -205,7 +184,12 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"style/selection.less":[function(require,module,exports) {
+},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"style/ui-components.less":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"style/selection.less":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -216,17 +200,15 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.selectedElements = selectedElements;
 exports.selectElement = selectElement;
 exports.clearSelection = clearSelection;
 exports.initSelection = initSelection;
-
-var _global = require("./global");
 
 require("../style/selection.less");
 
 var startingX;
 var startingY;
-var isSelecting = false;
 
 function interscts(r1, r2) {
   if (r1.left + r1.width >= r2.left && r1.left <= r2.left + r2.width && r1.top + r1.height >= r2.top && r1.top <= r2.top + r2.height) {
@@ -237,8 +219,7 @@ function interscts(r1, r2) {
 }
 
 function querySelectorRect(query, r) {
-  var elements = _global.map.querySelectorAll(query);
-
+  var elements = document.querySelectorAll(query);
   var filteredList = [];
   elements.forEach(function (element) {
     if (interscts(element.getBoundingClientRect(), r)) {
@@ -248,28 +229,32 @@ function querySelectorRect(query, r) {
   return filteredList;
 }
 
+function selectedElements(parent) {
+  return parent.querySelectorAll('.selected');
+}
+
 function selectElement(element) {
   element.classList.add('selected');
 }
 
-function clearSelection() {
-  for (var index = 0; index < _global.map.children.length; index++) {
-    _global.map.children.item(index).classList.remove('selected');
+function clearSelection(parent) {
+  for (var index = 0; index < parent.children.length; index++) {
+    parent.children.item(index).classList.remove('selected');
   }
 }
 
-function initSelection() {
-  var selection = document.getElementById("selection");
+function initSelection(parent) {
+  var selection = document.createElement("selection-area");
+  parent.append(selection);
 
-  _global.map.onmousedown = function (mouseDown) {
-    if (mouseDown.target.id != 'map') {
+  parent.onmousedown = function (mouseDown) {
+    if (mouseDown.target != parent) {
       return;
     }
 
-    clearSelection();
-    isSelecting = true;
-    startingX = mouseDown.clientX - _global.map.offsetLeft + window.pageXOffset;
-    startingY = mouseDown.clientY - _global.map.offsetTop + window.pageYOffset;
+    clearSelection(parent);
+    startingX = mouseDown.clientX - parent.offsetLeft + window.pageXOffset;
+    startingY = mouseDown.clientY - parent.offsetTop + window.pageYOffset;
     selection.style.display = 'block';
     selection.style.left = startingX + 'px';
     selection.style.top = startingY + 'px';
@@ -277,8 +262,8 @@ function initSelection() {
     selection.style.width = '0px';
 
     function onMouseMove(mouseMove) {
-      var x = mouseMove.clientX - _global.map.offsetLeft + window.pageXOffset;
-      var y = mouseMove.clientY - _global.map.offsetTop + window.pageYOffset;
+      var x = mouseMove.clientX - parent.offsetLeft + window.pageXOffset;
+      var y = mouseMove.clientY - parent.offsetTop + window.pageYOffset;
 
       if (x < 0) {
         x = 0;
@@ -288,12 +273,12 @@ function initSelection() {
         y = 0;
       }
 
-      if (x > _global.map.offsetWidth) {
-        x = _global.map.offsetWidth;
+      if (x > parent.offsetWidth) {
+        x = parent.offsetWidth;
       }
 
-      if (y > _global.map.offsetHeight) {
-        y = _global.map.offsetHeight;
+      if (y > parent.offsetHeight) {
+        y = parent.offsetHeight;
       }
 
       var width = Math.abs(startingX - x);
@@ -302,12 +287,11 @@ function initSelection() {
       selection.style.top = Math.min(startingY, y) + 'px';
       selection.style.height = height + 'px';
       selection.style.width = width + 'px';
-      clearSelection();
-      querySelectorRect('.taiko', selection.getBoundingClientRect()).forEach(selectElement);
+      clearSelection(parent);
+      querySelectorRect('.selectable', selection.getBoundingClientRect()).forEach(selectElement);
     }
 
     function onMouseUp(mouseUp) {
-      isSelecting = false;
       selection.style.display = 'none';
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('mousemove', onMouseMove);
@@ -317,7 +301,7 @@ function initSelection() {
     document.addEventListener('mouseup', onMouseUp);
   };
 }
-},{"./global":"src/global.ts","../style/selection.less":"style/selection.less"}],"src/draggable.ts":[function(require,module,exports) {
+},{"../style/selection.less":"style/selection.less"}],"src/draggable.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -325,17 +309,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeDraggable = makeDraggable;
 
-var _selection = require("./selection");
-
-var _global = require("./global");
-
-function makeDraggable(element) {
+function makeDraggable(element, limit) {
   element.onmousedown = function (event) {
     event.preventDefault();
     var shiftX = event.clientX - element.offsetLeft;
     var shiftY = event.clientY - element.offsetTop;
-    (0, _selection.clearSelection)();
-    (0, _selection.selectElement)(element);
 
     function onMouseMove(event) {
       var newLeft = event.clientX - shiftX;
@@ -349,13 +327,13 @@ function makeDraggable(element) {
         newTop = 0;
       }
 
-      var rightEdge = _global.map.clientWidth - element.clientWidth;
+      var rightEdge = limit.clientWidth - element.clientWidth;
 
       if (newLeft > rightEdge) {
         newLeft = rightEdge;
       }
 
-      var bottomEdge = _global.map.clientHeight - element.clientHeight;
+      var bottomEdge = limit.clientHeight - element.clientHeight;
 
       if (newTop > bottomEdge) {
         newTop = bottomEdge;
@@ -378,7 +356,20 @@ function makeDraggable(element) {
     return false;
   };
 }
-},{"./selection":"src/selection.ts","./global":"src/global.ts"}],"style/instruments.less":[function(require,module,exports) {
+},{}],"src/constants.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.meter = exports.shaku = void 0;
+var shaku = 20; // px
+
+exports.shaku = shaku;
+var meter = 3.3 * shaku; // px
+
+exports.meter = meter;
+},{}],"style/instruments.less":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -391,40 +382,63 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createInstrument = createInstrument;
 exports.clearInstruments = clearInstruments;
+exports.deleteSelectedInstruments = deleteSelectedInstruments;
 exports.InstrumentType = void 0;
 
 var _draggable = require("./draggable");
 
-require("../style/instruments.less");
+var _constants = require("./constants");
 
-var _global = require("./global");
+var _selection = require("./selection");
+
+require("../style/instruments.less");
 
 var InstrumentType;
 exports.InstrumentType = InstrumentType;
 
 (function (InstrumentType) {
   InstrumentType["Okedo"] = "okedo";
+  InstrumentType["Shime"] = "shime";
+  InstrumentType["Nagado"] = "nagado";
+  InstrumentType["Oodaiko"] = "oodaiko";
 })(InstrumentType || (exports.InstrumentType = InstrumentType = {}));
 
-function createInstrument(instrument, map, x, y, alpha, diameter) {
-  var newInstrument = document.createElement("div");
-  newInstrument.classList.add(instrument);
-  newInstrument.classList.add('taiko');
-  newInstrument.setAttribute('data-type', instrument);
-  newInstrument.style.height = diameter * _global.shaku + 'px';
-  newInstrument.style.width = diameter * _global.shaku + 'px';
-  newInstrument.style.left = map.clientWidth / 2 - diameter * _global.shaku / 2 + x + 'px';
-  newInstrument.style.top = map.clientHeight / 2 - diameter * _global.shaku / 2 + y + 'px';
-  (0, _draggable.makeDraggable)(newInstrument);
+function createInstrument(instrument, map) {
+  var newInstrument = document.createElement("e-taiko");
+  newInstrument.classList.add(instrument.type);
+  newInstrument.classList.add('selectable');
+  newInstrument.setAttribute('data-type', instrument.type);
+  newInstrument.style.height = instrument.diameter * _constants.shaku + 'px';
+  newInstrument.style.width = instrument.diameter * _constants.shaku + 'px';
+  newInstrument.style.left = map.clientWidth / 2 - instrument.diameter * _constants.shaku / 2 + instrument.x + 'px';
+  newInstrument.style.top = map.clientHeight / 2 - instrument.diameter * _constants.shaku / 2 + instrument.y + 'px';
+
+  newInstrument.onclick = function (event) {
+    (0, _selection.clearSelection)(map);
+    (0, _selection.selectElement)(newInstrument);
+  };
+
+  (0, _draggable.makeDraggable)(newInstrument, map);
   map.append(newInstrument);
 }
 
 function clearInstruments(map) {
-  map.querySelectorAll('.taiko').forEach(function (element) {
+  map.querySelectorAll('e-taiko').forEach(function (element) {
     element.remove();
   });
 }
-},{"./draggable":"src/draggable.ts","../style/instruments.less":"style/instruments.less","./global":"src/global.ts"}],"style/map.less":[function(require,module,exports) {
+
+function deleteSelectedInstruments(map) {
+  (0, _selection.selectedElements)(map).forEach(function (element) {
+    element.remove();
+  });
+}
+},{"./draggable":"src/draggable.ts","./constants":"src/constants.ts","./selection":"src/selection.ts","../style/instruments.less":"style/instruments.less"}],"style/sidemenu.less":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"style/map.less":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -437,703 +451,43 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initMap = initMap;
 
-var _global = require("./global");
+var _constants = require("./constants");
 
 require("../style/map.less");
 
 var _instruments = require("./instruments");
 
-function initMap(height, width) {
-  (0, _global.setMap)(document.getElementById("map"));
-  (0, _instruments.clearInstruments)(_global.map);
-  _global.map.style.height = height * _global.meter + 'px';
-  _global.map.style.width = width * _global.meter + 'px';
-  _global.map.style.backgroundPositionX = Math.round(width * _global.meter / 2) + 'px';
-  _global.map.style.backgroundPositionY = Math.round(height * _global.meter / 2) + 'px';
-
-  _global.map.setAttribute('data-height', height.toString());
-
-  _global.map.setAttribute('data-width', width.toString());
+function initMap(height, width, map) {
+  (0, _instruments.clearInstruments)(map);
+  map.style.display = 'block';
+  map.style.height = height * _constants.meter + 'px';
+  map.style.width = width * _constants.meter + 'px';
+  map.style.backgroundPositionX = Math.round(width * _constants.meter / 2) + 'px';
+  map.style.backgroundPositionY = Math.round(height * _constants.meter / 2) + 'px';
+  map.setAttribute('data-height', height.toString());
+  map.setAttribute('data-width', width.toString());
+  var corner = document.getElementById('corner');
+  corner.style.top = height * _constants.meter - 1 + 'px';
+  corner.style.left = width * _constants.meter - 1 + 'px';
 }
-},{"./global":"src/global.ts","../style/map.less":"style/map.less","./instruments":"src/instruments.ts"}],"node_modules/jsonpack/main.js":[function(require,module,exports) {
-var define;
-/*
- Copyright (c) 2013, Rodrigo González, Sapienlab All Rights Reserved.
- Available via MIT LICENSE. See https://github.com/roro89/jsonpack/blob/master/LICENSE.md for details.
- */
-(function(define) {
-
-	define([], function() {
-
-		var TOKEN_TRUE = -1;
-		var TOKEN_FALSE = -2;
-		var TOKEN_NULL = -3;
-		var TOKEN_EMPTY_STRING = -4;
-		var TOKEN_UNDEFINED = -5;
-
-		var pack = function(json, options) {
-
-			// Canonizes the options
-			options = options || {};
-
-			// A shorthand for debugging
-			var verbose = options.verbose || false;
-
-			verbose && console.log('Normalize the JSON Object');
-
-			// JSON as Javascript Object (Not string representation)
-			json = typeof json === 'string' ? this.JSON.parse(json) : json;
-
-			verbose && console.log('Creating a empty dictionary');
-
-			// The dictionary
-			var dictionary = {
-				strings : [],
-				integers : [],
-				floats : []
-			};
-
-			verbose && console.log('Creating the AST');
-
-			// The AST
-			var ast = (function recursiveAstBuilder(item) {
-
-				verbose && console.log('Calling recursiveAstBuilder with ' + this.JSON.stringify(item));
-
-				// The type of the item
-				var type = typeof item;
-
-				// Case 7: The item is null
-				if (item === null) {
-					return {
-						type : 'null',
-						index : TOKEN_NULL
-					};
-				}
-				
-				//add undefined 
-				if (typeof item === 'undefined') {
-					return {
-						type : 'undefined',
-						index : TOKEN_UNDEFINED
-					};
-				}
-
-				// Case 1: The item is Array Object
-				if ( item instanceof Array) {
-
-					// Create a new sub-AST of type Array (@)
-					var ast = ['@'];
-
-					// Add each items
-					for (var i in item) {
-						
-						if (!item.hasOwnProperty(i)) continue;
-
-						ast.push(recursiveAstBuilder(item[i]));
-					}
-
-					// And return
-					return ast;
-
-				}
-
-				// Case 2: The item is Object
-				if (type === 'object') {
-
-					// Create a new sub-AST of type Object ($)
-					var ast = ['$'];
-
-					// Add each items
-					for (var key in item) {
-
-						if (!item.hasOwnProperty(key))
-							continue;
-
-						ast.push(recursiveAstBuilder(key));
-						ast.push(recursiveAstBuilder(item[key]));
-					}
-
-					// And return
-					return ast;
-
-				}
-
-				// Case 3: The item empty string
-				if (item === '') {
-					return {
-						type : 'empty',
-						index : TOKEN_EMPTY_STRING
-					};
-				}
-
-				// Case 4: The item is String
-				if (type === 'string') {
-
-					// The index of that word in the dictionary
-					var index = _indexOf.call(dictionary.strings, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						dictionary.strings.push(_encode(item));
-						index = dictionary.strings.length - 1;
-					}
-
-					// Return the token
-					return {
-						type : 'strings',
-						index : index
-					};
-				}
-
-				// Case 5: The item is integer
-				if (type === 'number' && item % 1 === 0) {
-
-					// The index of that number in the dictionary
-					var index = _indexOf.call(dictionary.integers, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						dictionary.integers.push(_base10To36(item));
-						index = dictionary.integers.length - 1;
-					}
-
-					// Return the token
-					return {
-						type : 'integers',
-						index : index
-					};
-				}
-
-				// Case 6: The item is float
-				if (type === 'number') {
-					// The index of that number in the dictionary
-					var index = _indexOf.call(dictionary.floats, item);
-
-					// If not, add to the dictionary and actualize the index
-					if (index == -1) {
-						// Float not use base 36
-						dictionary.floats.push(item);
-						index = dictionary.floats.length - 1;
-					}
-
-					// Return the token
-					return {
-						type : 'floats',
-						index : index
-					};
-				}
-
-				// Case 7: The item is boolean
-				if (type === 'boolean') {
-					return {
-						type : 'boolean',
-						index : item ? TOKEN_TRUE : TOKEN_FALSE
-					};
-				}
-
-				// Default
-				throw new Error('Unexpected argument of type ' + typeof (item));
-
-			})(json);
-
-			// A set of shorthands proxies for the length of the dictionaries
-			var stringLength = dictionary.strings.length;
-			var integerLength = dictionary.integers.length;
-			var floatLength = dictionary.floats.length;
-
-			verbose && console.log('Parsing the dictionary');
-
-			// Create a raw dictionary
-			var packed = dictionary.strings.join('|');
-			packed += '^' + dictionary.integers.join('|');
-			packed += '^' + dictionary.floats.join('|');
-
-			verbose && console.log('Parsing the structure');
-
-			// And add the structure
-			packed += '^' + (function recursiveParser(item) {
-
-				verbose && console.log('Calling a recursiveParser with ' + this.JSON.stringify(item));
-
-				// If the item is Array, then is a object of
-				// type [object Object] or [object Array]
-				if ( item instanceof Array) {
-
-					// The packed resulting
-					var packed = item.shift();
-
-					for (var i in item) {
-						
-						if (!item.hasOwnProperty(i)) 
-							continue;
-						
-						packed += recursiveParser(item[i]) + '|';
-					}
-
-					return (packed[packed.length - 1] === '|' ? packed.slice(0, -1) : packed) + ']';
-
-				}
-
-				// A shorthand proxies
-				var type = item.type, index = item.index;
-
-				if (type === 'strings') {
-					// Just return the base 36 of index
-					return _base10To36(index);
-				}
-
-				if (type === 'integers') {
-					// Return a base 36 of index plus stringLength offset
-					return _base10To36(stringLength + index);
-				}
-
-				if (type === 'floats') {
-					// Return a base 36 of index plus stringLength and integerLength offset
-					return _base10To36(stringLength + integerLength + index);
-				}
-
-				if (type === 'boolean') {
-					return item.index;
-				}
-
-				if (type === 'null') {
-					return TOKEN_NULL;
-				}
-
-				if (type === 'undefined') {
-					return TOKEN_UNDEFINED;
-				}
-
-				if (type === 'empty') {
-					return TOKEN_EMPTY_STRING;
-				}
-
-				throw new TypeError('The item is alien!');
-
-			})(ast);
-
-			verbose && console.log('Ending parser');
-
-			// If debug, return a internal representation of dictionary and stuff
-			if (options.debug)
-				return {
-					dictionary : dictionary,
-					ast : ast,
-					packed : packed
-				};
-
-			return packed;
-
-		};
-
-		var unpack = function(packed, options) {
-
-			// Canonizes the options
-			options = options || {};
-
-			// A raw buffer
-			var rawBuffers = packed.split('^');
-
-			// Create a dictionary
-			options.verbose && console.log('Building dictionary');
-			var dictionary = [];
-
-			// Add the strings values
-			var buffer = rawBuffers[0];
-			if (buffer !== '') {
-				buffer = buffer.split('|');
-				options.verbose && console.log('Parse the strings dictionary');
-				for (var i=0, n=buffer.length; i<n; i++){
-					dictionary.push(_decode(buffer[i]));
-				}
-			}
-
-			// Add the integers values
-			buffer = rawBuffers[1];
-			if (buffer !== '') {
-				buffer = buffer.split('|');
-				options.verbose && console.log('Parse the integers dictionary');
-				for (var i=0, n=buffer.length; i<n; i++){
-					dictionary.push(_base36To10(buffer[i]));
-				}
-			}
-
-			// Add the floats values
-			buffer = rawBuffers[2];
-			if (buffer !== '') {
-				buffer = buffer.split('|')
-				options.verbose && console.log('Parse the floats dictionary');
-				for (var i=0, n=buffer.length; i<n; i++){
-					dictionary.push(parseFloat(buffer[i]));
-				}
-			}
-			// Free memory
-			buffer = null;
-
-			options.verbose && console.log('Tokenizing the structure');
-
-			// Tokenizer the structure
-			var number36 = '';
-			var tokens = [];
-			var len=rawBuffers[3].length;
-			for (var i = 0; i < len; i++) {
-				var symbol = rawBuffers[3].charAt(i);
-				if (symbol === '|' || symbol === '$' || symbol === '@' || symbol === ']') {
-					if (number36) {
-						tokens.push(_base36To10(number36));
-						number36 = '';
-					}
-					symbol !== '|' && tokens.push(symbol);
-				} else {
-					number36 += symbol;
-				}
-			}
-
-			// A shorthand proxy for tokens.length
-			var tokensLength = tokens.length;
-
-			// The index of the next token to read
-			var tokensIndex = 0;
-
-			options.verbose && console.log('Starting recursive parser');
-
-			return (function recursiveUnpackerParser() {
-
-				// Maybe '$' (object) or '@' (array)
-				var type = tokens[tokensIndex++];
-
-				options.verbose && console.log('Reading collection type ' + (type === '$' ? 'object' : 'Array'));
-
-				// Parse an array
-				if (type === '@') {
-
-					var node = [];
-
-					for (; tokensIndex < tokensLength; tokensIndex++) {
-						var value = tokens[tokensIndex];
-						options.verbose && console.log('Read ' + value + ' symbol');
-						if (value === ']')
-							return node;
-						if (value === '@' || value === '$') {
-							node.push(recursiveUnpackerParser());
-						} else {
-							switch(value) {
-								case TOKEN_TRUE:
-									node.push(true);
-									break;
-								case TOKEN_FALSE:
-									node.push(false);
-									break;
-								case TOKEN_NULL:
-									node.push(null);
-									break;
-								case TOKEN_UNDEFINED:
-									node.push(undefined);
-									break;
-								case TOKEN_EMPTY_STRING:
-									node.push('');
-									break;
-								default:
-									node.push(dictionary[value]);
-							}
-
-						}
-					}
-
-					options.verbose && console.log('Parsed ' + this.JSON.stringify(node));
-
-					return node;
-
-				}
-
-				// Parse a object
-				if (type === '$') {
-					var node = {};
-
-					for (; tokensIndex < tokensLength; tokensIndex++) {
-
-						var key = tokens[tokensIndex];
-
-						if (key === ']')
-							return node;
-
-						if (key === TOKEN_EMPTY_STRING)
-							key = '';
-						else
-							key = dictionary[key];
-
-						var value = tokens[++tokensIndex];
-
-						if (value === '@' || value === '$') {
-							node[key] = recursiveUnpackerParser();
-						} else {
-							switch(value) {
-								case TOKEN_TRUE:
-									node[key] = true;
-									break;
-								case TOKEN_FALSE:
-									node[key] = false;
-									break;
-								case TOKEN_NULL:
-									node[key] = null;
-									break;
-								case TOKEN_UNDEFINED:
-									node[key] = undefined;
-									break;
-								case TOKEN_EMPTY_STRING:
-									node[key] = '';
-									break;
-								default:
-									node[key] = dictionary[value];
-							}
-
-						}
-					}
-
-					options.verbose && console.log('Parsed ' + this.JSON.stringify(node));
-
-					return node;
-				}
-
-				throw new TypeError('Bad token ' + type + ' isn\'t a type');
-
-			})();
-
-		}
-		/**
-		 * Get the index value of the dictionary
-		 * @param {Object} dictionary a object that have two array attributes: 'string' and 'number'
-		 * @param {Object} data
-		 */
-		var _indexOfDictionary = function(dictionary, value) {
-
-			// The type of the value
-			var type = typeof value;
-
-			// If is boolean, return a boolean token
-			if (type === 'boolean')
-				return value ? TOKEN_TRUE : TOKEN_FALSE;
-
-			// If is null, return a... yes! the null token
-			if (value === null)
-				return TOKEN_NULL;
-
-			//add undefined
-			if (typeof value === 'undefined')
-				return TOKEN_UNDEFINED;
-
-
-			if (value === '') {
-				return TOKEN_EMPTY_STRING;
-			}
-
-			if (type === 'string') {
-				value = _encode(value);
-				var index = _indexOf.call(dictionary.strings, value);
-				if (index === -1) {
-					dictionary.strings.push(value);
-					index = dictionary.strings.length - 1;
-				}
-			}
-
-			// If has an invalid JSON type (example a function)
-			if (type !== 'string' && type !== 'number') {
-				throw new Error('The type is not a JSON type');
-			};
-
-			if (type === 'string') {// string
-				value = _encode(value);
-			} else if (value % 1 === 0) {// integer
-				value = _base10To36(value);
-			} else {// float
-
-			}
-
-			// If is number, "serialize" the value
-			value = type === 'number' ? _base10To36(value) : _encode(value);
-
-			// Retrieve the index of that value in the dictionary
-			var index = _indexOf.call(dictionary[type], value);
-
-			// If that value is not in the dictionary
-			if (index === -1) {
-				// Push the value
-				dictionary[type].push(value);
-				// And return their index
-				index = dictionary[type].length - 1;
-			}
-
-			// If the type is a number, then add the '+'  prefix character
-			// to differentiate that they is a number index. If not, then
-			// just return a 36-based representation of the index
-			return type === 'number' ? '+' + index : index;
-
-		};
-
-		var _encode = function(str) {
-			if ( typeof str !== 'string')
-				return str;
-
-			return str.replace(/[\+ \|\^\%]/g, function(a) {
-				return ({
-				' ' : '+',
-				'+' : '%2B',
-				'|' : '%7C',
-				'^' : '%5E',
-				'%' : '%25'
-				})[a]
-			});
-		};
-
-		var _decode = function(str) {
-			if ( typeof str !== 'string')
-				return str;
-
-			return str.replace(/\+|%2B|%7C|%5E|%25/g, function(a) {
-				return ({
-				'+' : ' ',
-				'%2B' : '+',
-				'%7C' : '|',
-				'%5E' : '^',
-				'%25' : '%'
-				})[a]
-			})
-		};
-
-		var _base10To36 = function(number) {
-			return Number.prototype.toString.call(number, 36).toUpperCase();
-		};
-
-		var _base36To10 = function(number) {
-			return parseInt(number, 36);
-		};
-
-		var _indexOf = Array.prototype.indexOf ||
-		function(obj, start) {
-			for (var i = (start || 0), j = this.length; i < j; i++) {
-				if (this[i] === obj) {
-					return i;
-				}
-			}
-			return -1;
-		};
-
-		return {
-			JSON : JSON,
-			pack : pack,
-			unpack : unpack
-		};
-
-	});
-
-})( typeof define == 'undefined' || !define.amd ? function(deps, factory) {
-	var jsonpack = factory();
-	if ( typeof exports != 'undefined')
-		for (var key in jsonpack)
-		exports[key] = jsonpack[key];
-	else
-		window.jsonpack = jsonpack;
-} : define);
-
-},{}],"node_modules/node-lzw/lib/lzw.js":[function(require,module,exports) {
-"use strict";
-
-var LZW = function() { };
-
-LZW.prototype.encode = function(s) {
-    var dict = {};
-    var data = (s + "").split("");
-    var out = [];
-    var currChar;
-    var phrase = data[0];
-    var code = 256;
-    for (var i = 1; i < data.length; i++) {
-        currChar = data[i];
-        if (dict[phrase + currChar] != null) {
-            phrase += currChar;
-        }
-        else {
-            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-            dict[phrase + currChar] = code;
-            code++;
-            phrase=currChar;
-        }
-    }
-    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-    for (var i = 0; i < out.length; i++) {
-        out[i] = String.fromCharCode(out[i]);
-    }
-    return out.join("");
-};
-
-LZW.prototype.decode = function(s) {
-	var dict = {};
-	var data = (s + "").split("");
-	var currChar = data[0];
-	var oldPhrase = currChar;
-	var out = [currChar];
-	var code = 256;
-	var phrase;
-	for (var i = 1; i < data.length; i++) {
-		var currCode = data[i].charCodeAt(0);
-		if (currCode < 256) {
-			phrase = data[i];
-		}
-		else {
-		   phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
-		}
-		out.push(phrase);
-		currChar = phrase.charAt(0);
-		dict[code] = oldPhrase + currChar;
-		code++;
-		oldPhrase = phrase;
-	}
-	return out.join("");
-};
-
-module.exports = new LZW();
-
-},{}],"node_modules/json-lzw/lib/json-lzw.js":[function(require,module,exports) {
-"use strict";
-
-var jpack = require("jsonpack/main");
-var lzw = require("node-lzw");
-
-var JSONLZW = function() { };
-
-JSONLZW.prototype.encode = function(t) {
-	var s = jpack.pack(t);
-	return lzw.encode(s);
-};
-
-JSONLZW.prototype.decode = function(t) {
-	var s = jpack.unpack(t);
-	return lzw.decode(s);
-};
-
-module.exports = new JSONLZW();
-
-},{"jsonpack/main":"node_modules/jsonpack/main.js","node-lzw":"node_modules/node-lzw/lib/lzw.js"}],"src/storage.ts":[function(require,module,exports) {
+},{"./constants":"src/constants.ts","../style/map.less":"style/map.less","./instruments":"src/instruments.ts"}],"src/storage.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.save = save;
+exports.mapToJson = mapToJson;
 exports.load = load;
 
-var _global = require("./global");
+var _constants = require("./constants");
 
 var _map = require("./map");
 
 var _instruments = require("./instruments");
 
-var _jsonLzw = require("json-lzw");
-
-function save() {
-  var height = parseInt(_global.map.getAttribute('data-height'));
-  var width = parseInt(_global.map.getAttribute('data-width'));
+function mapToJson(map) {
+  var height = parseInt(map.getAttribute('data-height'));
+  var width = parseInt(map.getAttribute('data-width'));
   var data = {
     map: {
       height: height,
@@ -1141,33 +495,33 @@ function save() {
     },
     instruments: Array()
   };
-  document.querySelectorAll('.taiko').forEach(function (element) {
+  map.querySelectorAll('e-taiko').forEach(function (element) {
     data.instruments.push({
       type: element.getAttribute('data-type'),
-      x: element.offsetLeft + element.clientWidth / 2 - _global.map.clientWidth / 2,
-      y: element.offsetTop + element.clientHeight / 2 - _global.map.clientHeight / 2,
+      x: element.offsetLeft + element.clientWidth / 2 - map.clientWidth / 2,
+      y: element.offsetTop + element.clientHeight / 2 - map.clientHeight / 2,
       alpha: 0,
-      diameter: element.clientWidth / _global.shaku
+      diameter: element.clientWidth / _constants.shaku
     });
   });
-  document.getElementById('json').value = JSON.stringify(data);
-  document.getElementById('min-json').value = (0, _jsonLzw.encode)(JSON.stringify(data));
+  return JSON.stringify(data);
 }
 
-function load() {
-  var json = document.getElementById('json').value;
-  var data = JSON.parse(json);
-  (0, _map.initMap)(data.map.height, data.map.width);
+function load(map, data) {
+  (0, _map.initMap)(data.map.height, data.map.width, map);
   data.instruments.forEach(function (instrument) {
-    (0, _instruments.createInstrument)(instrument.type, _global.map, instrument.x, instrument.y, instrument.alpha, instrument.diameter);
+    (0, _instruments.createInstrument)(instrument, map);
   });
 }
-},{"./global":"src/global.ts","./map":"src/map.ts","./instruments":"src/instruments.ts","json-lzw":"node_modules/json-lzw/lib/json-lzw.js"}],"src/main.ts":[function(require,module,exports) {
+},{"./constants":"src/constants.ts","./map":"src/map.ts","./instruments":"src/instruments.ts"}],"src/sidemenu.ts":[function(require,module,exports) {
 "use strict";
 
-var _global = require("./global");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initSideMenuListeners = initSideMenuListeners;
 
-var _selection = require("./selection");
+require("../style/sidemenu.less");
 
 var _instruments = require("./instruments");
 
@@ -1175,29 +529,79 @@ var _map = require("./map");
 
 var _storage = require("./storage");
 
+function initSideMenuListeners(map) {
+  var selectedInstrument;
+
+  document.getElementById('add').onclick = function (event) {
+    if (selectedInstrument != null) {
+      (0, _instruments.createInstrument)(selectedInstrument, map);
+    }
+  };
+
+  document.getElementById('save').onclick = function (event) {
+    var anchor = document.getElementById("download");
+    anchor.download = "mapa.taiko";
+    anchor.href = "data:text/json;charset=utf-8," + encodeURIComponent((0, _storage.mapToJson)(map));
+    anchor.click();
+  };
+
+  document.getElementById('load').onchange = function (event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = function (loadEvent) {
+      var data = JSON.parse(loadEvent.target.result.toString());
+      (0, _storage.load)(map, data);
+    };
+  };
+
+  document.getElementById('new').onclick = function (event) {
+    var height = parseInt(document.getElementById('height').value);
+    var width = parseInt(document.getElementById('width').value);
+    (0, _map.initMap)(height, width, map);
+  };
+
+  document.querySelectorAll('list-item').forEach(function (item) {
+    item.onclick = function (event) {
+      document.querySelectorAll('list-item').forEach(function (item) {
+        item.classList.remove('selected-item');
+      });
+      item.classList.add('selected-item');
+      selectedInstrument = {
+        type: item.getAttribute('data-type'),
+        x: 0,
+        y: 0,
+        alpha: 0,
+        diameter: parseFloat(item.getAttribute('data-diameter'))
+      };
+    };
+  });
+}
+},{"../style/sidemenu.less":"style/sidemenu.less","./instruments":"src/instruments.ts","./map":"src/map.ts","./storage":"src/storage.ts"}],"src/main.ts":[function(require,module,exports) {
+"use strict";
+
+require("../style/ui-components.less");
+
+var _selection = require("./selection");
+
+var _instruments = require("./instruments");
+
+var _sidemenu = require("./sidemenu");
+
+var map = document.getElementById('map');
+
 window.onload = function () {
-  (0, _map.initMap)(8, 12);
-  (0, _selection.initSelection)();
+  (0, _sidemenu.initSideMenuListeners)(map);
+  (0, _selection.initSelection)(map);
 };
 
-document.getElementById('add').onclick = function (event) {
-  (0, _instruments.createInstrument)(_instruments.InstrumentType.Okedo, _global.map, 0, 0, 0, 1.5);
+document.onkeydown = function (event) {
+  if (event.key == "Delete") {
+    (0, _instruments.deleteSelectedInstruments)(map);
+  }
 };
-
-document.getElementById('export').onclick = function (event) {
-  (0, _storage.save)();
-};
-
-document.getElementById('import').onclick = function (event) {
-  (0, _storage.load)();
-};
-
-document.getElementById('new').onclick = function (event) {
-  var height = parseInt(document.getElementById('height').value);
-  var width = parseInt(document.getElementById('width').value);
-  (0, _map.initMap)(height, width);
-};
-},{"./global":"src/global.ts","./selection":"src/selection.ts","./instruments":"src/instruments.ts","./map":"src/map.ts","./storage":"src/storage.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../style/ui-components.less":"style/ui-components.less","./selection":"src/selection.ts","./instruments":"src/instruments.ts","./sidemenu":"src/sidemenu.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -1225,7 +629,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "33403" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40951" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

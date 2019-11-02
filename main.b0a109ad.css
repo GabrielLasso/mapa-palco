@@ -1,8 +1,61 @@
+body {
+  margin: 0;
+}
+v-box {
+  display: flex;
+  flex-direction: column;
+}
+h-box {
+  display: flex;
+  flex-direction: row;
+}
+ui-button,
+.btn {
+  cursor: pointer;
+  border: 2px solid black;
+  text-align: center;
+  margin: 8px;
+  padding: 8px;
+  min-width: 0px;
+}
+ui-button:hover,
+.btn:hover {
+  background-color: #dddddd;
+}
+ui-button:active,
+.btn:active {
+  background-color: #afafaf;
+}
+input {
+  border: 2px solid black;
+  margin: 8px;
+  padding: 8px;
+}
+.selected-item {
+  background-color: #afafaf;
+}
+.selected-item:hover {
+  background-color: #afafaf;
+}
+ui-list {
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  margin: 8px;
+  padding: 8px;
+}
+ui-list list-item {
+  padding: 8px;
+}
+ui-list list-item:hover {
+  background-color: #dddddd;
+}
+
 .selected {
   border-width: 2px;
   background-color: #ddddffbb;
 }
-#selection {
+selection-area {
   background-color: #ddddff99;
   border: 1px solid #ddddff;
   display: none;
@@ -11,11 +64,38 @@
 
 .okedo {
   border: 1px solid black;
-  border-radius: 50%;
   position: absolute;
 }
 .okedo:hover {
   background-color: #ddddff99;
+}
+.shime {
+  border: 1px solid black;
+  position: absolute;
+}
+.shime:hover {
+  background-color: #ddddff99;
+}
+.nagado {
+  border: 1px solid black;
+  position: absolute;
+}
+.nagado:hover {
+  background-color: #ddddff99;
+}
+.oodaiko {
+  border: 1px solid black;
+  position: absolute;
+}
+.oodaiko:hover {
+  background-color: #ddddff99;
+}
+
+.side-menu {
+  padding: 8px;
+  border: solid black;
+  border-width: 0 2px 0 0;
+  height: 100%;
 }
 
 #map {
@@ -23,6 +103,14 @@
   background-size: 132px 132px;
   border: 1px solid black;
   position: relative;
+  background-attachment: local;
+  overflow: auto;
+  display: none;
+}
+#corner {
+  position: absolute;
+  height: 1px;
+  width: 1px;
 }
 
 
