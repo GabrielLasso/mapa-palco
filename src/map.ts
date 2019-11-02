@@ -9,6 +9,7 @@ export interface MapData {
 
 export function initMap(height : number, width : number, map : HTMLElement)  {
     clearInstruments(map)
+    map.style.display = 'block'
     map.style.height = height * meter + 'px'
     map.style.width = width * meter + 'px'
     map.style.backgroundPositionX = Math.round(width * meter / 2) + 'px'
