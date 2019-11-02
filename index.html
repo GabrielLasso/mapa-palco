@@ -6,21 +6,42 @@
         <script type="module" src="./src/main.ts"></script>
     </head>
     <body>
-        <label for="height">Altura</label>
-        <input id="height" type="number">
-        <label for="width">Largura</label>
-        <input id="width" type="number">
-        <button id="new">Novo</button>
-        <button id="add">Adicionar instrumento</button>
+        <h-box>
+            <v-box>
+                <label for="height">Altura</label>
+                <input id="height" type="number">
 
-        <button id="save">Salvar</button>
-        <a id="download" style="display: none"></a>
+                <label for="width">Largura</label>
+                <input id="width" type="number">
 
-        <label for="load">
-            Carregar
-        </label>
-        <input id="load" type="file" style="display: none" accept=".taiko">
+                <ui-button id="new">Novo</ui-button>
 
-        <div id="map"></div>
+                <ui-button id="save">Salvar</ui-button>
+                <a id="download" style="display: none"></a>
+
+                <label for="load" class="btn">
+                    Carregar
+                </label>
+                <input id="load" type="file" style="display: none" accept=".taiko">
+
+                <ui-list id="instrument-list">
+                    <list-item data-type="okedo">
+                        Okedo
+                    </list-item>
+                    <list-item data-type="shime">
+                        Shime
+                    </list-item>
+                    <list-item data-type="nagado">
+                        Nagado
+                    </list-item>
+                    <list-item data-type="oodaiko">
+                        Oodaiko
+                    </list-item>
+                </ui-list>
+
+                <ui-button id="add">Adicionar instrumento</ui-button>
+            </v-box>
+            <div id="map"></div>
+        </h-box>
     </body>
 </html>

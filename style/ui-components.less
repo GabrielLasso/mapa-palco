@@ -1,0 +1,45 @@
+v-box {
+    display: flex;
+    flex-direction: column;
+}
+
+h-box {
+    display: flex;
+    flex-direction: row;
+}
+
+ui-button, .btn {
+    cursor: pointer;
+    border: 2px solid black;
+    text-align: center;
+    margin: 8px;
+    padding: 8px;
+    min-width: 0px;
+}
+
+input {
+    border: 2px solid black;
+    margin: 8px;
+    padding: 8px
+}
+
+.selected-item {
+    background-color: #afafaf;
+    &:hover {
+        background-color: #afafaf;
+    }
+}
+
+ui-list {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+    padding: 8px;
+    list-item {
+        &:hover {
+            background-color: #dddddd;
+        }
+        padding: 8px;
+    }
+}

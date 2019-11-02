@@ -4,7 +4,10 @@ import { shaku } from './constants'
 import { clearSelection, selectElement } from './selection'
 
 export enum InstrumentType {
-    Okedo = 'okedo'
+    Okedo = 'okedo',
+    Shime = 'shime',
+    Nagado = 'nagado',
+    Oodaiko = 'oodaiko'
 }
 
 export interface InstrumentData {

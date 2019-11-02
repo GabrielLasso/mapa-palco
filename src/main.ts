@@ -1,16 +1,20 @@
-import { initSelection } from './selection'
+import { initSelection, selectElement } from './selection'
 import { createInstrument, InstrumentType } from './instruments'
 import { initMap } from './map'
 import { mapToJson, load, SaveData } from './storage'
+import '../style/ui-components.less'
 
 let map = document.getElementById('map')
+let selectedInstrument : InstrumentType
 
 window.onload = () => {
     initSelection(map)
 }
 
 document.getElementById('add').onclick = (event) => {
-    createInstrument(InstrumentType.Okedo, map, 0, 0, 0, 1.5)
+    if (selectedInstrument != null) {
+        createInstrument(selectedInstrument, map, 0, 0, 0, 1.5)
+    }
 }
 
 document.getElementById('save').onclick = (event) => {
@@ -35,3 +39,13 @@ document.getElementById('new').onclick = (event) => {
     let width = parseInt((document.getElementById('width') as HTMLInputElement).value)
     initMap(height, width, map)
 }
+
+document.querySelectorAll('list-item').forEach((item : HTMLElement) => {
+    item.onclick = (event) => {
+        document.querySelectorAll('list-item').forEach((item : HTMLElement) => {
+            item.classList.remove('selected-item')
+        })
+        item.classList.add('selected-item')
+        selectedInstrument = item.getAttribute('data-type') as InstrumentType
+    }
+})
