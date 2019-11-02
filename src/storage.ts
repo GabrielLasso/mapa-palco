@@ -32,6 +32,6 @@ export function mapToJson(map : HTMLElement) : string {
 export function load(map : HTMLElement, data: SaveData) {
     initMap(data.map.height, data.map.width, map)
     data.instruments.forEach((instrument) => {
-        createInstrument(instrument.type, map, instrument.x, instrument.y, instrument.alpha, instrument.diameter)
+        createInstrument(instrument, map)
     })
 }

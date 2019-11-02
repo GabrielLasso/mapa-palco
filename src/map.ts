@@ -15,4 +15,8 @@ export function initMap(height : number, width : number, map : HTMLElement)  {
     map.style.backgroundPositionY = Math.round(height * meter / 2) + 'px'
     map.setAttribute('data-height', height.toString())
     map.setAttribute('data-width', width.toString())
+
+    let corner = document.getElementById('corner')
+    corner.style.top = height * meter - 1 + 'px'
+    corner.style.left = width * meter - 1 + 'px'
 }

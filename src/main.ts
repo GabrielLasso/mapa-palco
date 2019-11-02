@@ -7,19 +7,19 @@ import '../style/ui-components.less'
 let map = document.getElementById('map')
 let selectedInstrument : InstrumentData
 
-document.onkeydown = (event : KeyboardEvent) => {
-    if (event.key == "Delete") {
-        deleteSelectedInstruments(map)
-    }
-}
-
 window.onload = () => {
     initSelection(map)
 }
 
 document.getElementById('add').onclick = (event) => {
     if (selectedInstrument != null) {
-        createInstrument(selectedInstrument.type, map, 0, 0, 0, selectedInstrument.diameter)
+        createInstrument(selectedInstrument, map)
+    }
+}
+
+document.onkeydown = (event : KeyboardEvent) => {
+    if (event.key == "Delete") {
+        deleteSelectedInstruments(map)
     }
 }
 
