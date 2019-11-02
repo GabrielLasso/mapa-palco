@@ -1,6 +1,7 @@
 import { makeDraggable } from './draggable'
 import '../style/instruments.less'
-import { shaku } from './global'
+import { shaku } from './constants'
+import { clearSelection, selectElement } from './selection'
 
 export enum InstrumentType {
     Okedo = 'okedo'
@@ -15,20 +16,24 @@ export interface InstrumentData {
 }
 
 export function createInstrument(instrument : InstrumentType, map : HTMLElement, x : number, y : number, alpha : number, diameter : number) {
-    let newInstrument = document.createElement("div")
+    let newInstrument = document.createElement("e-taiko")
     newInstrument.classList.add(instrument)
-    newInstrument.classList.add('taiko')
+    newInstrument.classList.add('selectable')
     newInstrument.setAttribute('data-type', instrument)
     newInstrument.style.height = diameter * shaku + 'px'
     newInstrument.style.width = diameter * shaku + 'px'
     newInstrument.style.left = map.clientWidth / 2 - diameter * shaku / 2 + x + 'px'
     newInstrument.style.top = map.clientHeight / 2 - diameter * shaku / 2 + y + 'px'
-    makeDraggable(newInstrument)
+    newInstrument.onclick = (event) => {
+        clearSelection(map)
+        selectElement(newInstrument)
+    }
+    makeDraggable(newInstrument, map)
     map.append(newInstrument)
 }
 
 export function clearInstruments(map : HTMLElement) {
-    map.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
+    map.querySelectorAll('e-taiko').forEach((element : HTMLElement) => {
         element.remove()
     })
 }

@@ -1,9 +1,7 @@
-import { map } from './global'
 import '../style/selection.less'
 
 let startingX: number
 let startingY: number
-let isSelecting: boolean = false
 
 function interscts(r1: ClientRect, r2: ClientRect): boolean {
     if (r1.left + r1.width >= r2.left &&
@@ -16,7 +14,7 @@ function interscts(r1: ClientRect, r2: ClientRect): boolean {
 }
 
 function querySelectorRect(query: string, r: ClientRect): NodeListOf<HTMLElement> {
-    let elements = map.querySelectorAll(query)
+    let elements = document.querySelectorAll(query)
 
     let filteredList = []
     elements.forEach((element) => {
@@ -32,22 +30,22 @@ export function selectElement(element: HTMLElement) {
     element.classList.add('selected')
 }
 
-export function clearSelection() {
-    for (let index = 0; index < map.children.length; index++) {
-        map.children.item(index).classList.remove('selected')
+export function clearSelection(parent : HTMLElement) {
+    for (let index = 0; index < parent.children.length; index++) {
+        parent.children.item(index).classList.remove('selected')
     }
 }
 
-export function initSelection() {
-    let selection = document.getElementById("selection")
-    map.onmousedown = (mouseDown) => {
-        if ((mouseDown.target as HTMLElement).id != 'map') {
+export function initSelection(parent : HTMLElement) {
+    let selection = document.createElement("selection-area")
+    parent.append(selection)
+    parent.onmousedown = (mouseDown) => {
+        if (mouseDown.target != parent) {
             return
         }
-        clearSelection()
-        isSelecting = true
-        startingX = mouseDown.clientX - map.offsetLeft + window.pageXOffset
-        startingY = mouseDown.clientY - map.offsetTop + window.pageYOffset
+        clearSelection(parent)
+        startingX = mouseDown.clientX - parent.offsetLeft + window.pageXOffset
+        startingY = mouseDown.clientY - parent.offsetTop + window.pageYOffset
         selection.style.display = 'block'
         selection.style.left = startingX + 'px'
         selection.style.top = startingY + 'px'
@@ -55,19 +53,19 @@ export function initSelection() {
         selection.style.width = '0px'
 
         function onMouseMove(mouseMove: MouseEvent) {
-            let x = mouseMove.clientX - map.offsetLeft + window.pageXOffset
-            let y = mouseMove.clientY - map.offsetTop + window.pageYOffset
+            let x = mouseMove.clientX - parent.offsetLeft + window.pageXOffset
+            let y = mouseMove.clientY - parent.offsetTop + window.pageYOffset
             if (x < 0) {
                 x = 0
             }
             if (y < 0) {
                 y = 0
             }
-            if (x > map.offsetWidth) {
-                x = map.offsetWidth
+            if (x > parent.offsetWidth) {
+                x = parent.offsetWidth
             }
-            if (y > map.offsetHeight) {
-                y = map.offsetHeight
+            if (y > parent.offsetHeight) {
+                y = parent.offsetHeight
             }
             let width = Math.abs(startingX - x)
             let height = Math.abs(startingY - y)
@@ -75,12 +73,11 @@ export function initSelection() {
             selection.style.top = Math.min(startingY, y) + 'px'
             selection.style.height = height + 'px'
             selection.style.width = width + 'px'
-            clearSelection()
-            querySelectorRect('.taiko', selection.getBoundingClientRect()).forEach(selectElement)
+            clearSelection(parent)
+            querySelectorRect('.selectable', selection.getBoundingClientRect()).forEach(selectElement)
         }
 
         function onMouseUp(mouseUp: MouseEvent) {
-            isSelecting = false
             selection.style.display = 'none'
             document.removeEventListener('mouseup', onMouseUp)
             document.removeEventListener('mousemove', onMouseMove)

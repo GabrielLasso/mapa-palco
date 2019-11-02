@@ -1,4 +1,4 @@
-import { setMap, map, meter } from './global'
+import { meter } from './constants'
 import '../style/map.less'
 import { clearInstruments } from './instruments'
 
@@ -7,8 +7,7 @@ export interface MapData {
     width : number
 }
 
-export function initMap(height : number, width : number) {
-    setMap(document.getElementById("map"))
+export function initMap(height : number, width : number, map : HTMLElement)  {
     clearInstruments(map)
     map.style.height = height * meter + 'px'
     map.style.width = width * meter + 'px'

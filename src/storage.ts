@@ -1,14 +1,13 @@
-import { map, shaku } from './global'
+import { shaku } from './constants'
 import { MapData, initMap } from './map'
 import { InstrumentData, InstrumentType, createInstrument } from './instruments'
-import { encode, decode } from 'json-lzw'
 
 interface SaveData {
     map : MapData,
     instruments : Array<InstrumentData>
 }
 
-export function save() {
+export function save(map : HTMLElement) {
     let height = parseInt(map.getAttribute('data-height'));
     let width = parseInt(map.getAttribute('data-width'));
     let data : SaveData = {
@@ -18,7 +17,7 @@ export function save() {
         },
         instruments : Array<InstrumentData>()
     };
-    document.querySelectorAll('.taiko').forEach((element : HTMLElement) => {
+    document.querySelectorAll('e-taiko').forEach((element : HTMLElement) => {
         data.instruments.push({
             type : element.getAttribute('data-type') as InstrumentType,
             x : element.offsetLeft + element.clientWidth / 2 - map.clientWidth / 2,
@@ -28,13 +27,12 @@ export function save() {
         })
     });
     (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data);
-    (document.getElementById('min-json') as HTMLTextAreaElement).value = encode(JSON.stringify(data));
 }
 
-export function load() {
+export function load(map : HTMLElement) {
     let json = (document.getElementById('json') as HTMLTextAreaElement).value
     let data : SaveData = JSON.parse(json)
-    initMap(data.map.height, data.map.width)
+    initMap(data.map.height, data.map.width, map)
     data.instruments.forEach((instrument) => {
         createInstrument(instrument.type, map, instrument.x, instrument.y, instrument.alpha, instrument.diameter)
     })

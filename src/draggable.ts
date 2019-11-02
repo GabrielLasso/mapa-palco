@@ -1,15 +1,9 @@
-import { clearSelection, selectElement } from './selection'
-import { map } from './global'
-
-export function makeDraggable(element: HTMLElement) {
+export function makeDraggable(element: HTMLElement, limit: HTMLElement) {
     element.onmousedown = (event) => {
         event.preventDefault()
 
         let shiftX = event.clientX - element.offsetLeft
         let shiftY = event.clientY - element.offsetTop
-
-        clearSelection()
-        selectElement(element)
 
         function onMouseMove(event: MouseEvent) {
             let newLeft = event.clientX - shiftX
@@ -21,11 +15,11 @@ export function makeDraggable(element: HTMLElement) {
             if (newTop < 0) {
                 newTop = 0
             }
-            let rightEdge = map.clientWidth - element.clientWidth
+            let rightEdge = limit.clientWidth - element.clientWidth
             if (newLeft > rightEdge) {
                 newLeft = rightEdge
             }
-            let bottomEdge = map.clientHeight - element.clientHeight
+            let bottomEdge = limit.clientHeight - element.clientHeight
             if (newTop > bottomEdge) {
                 newTop = bottomEdge
             }
