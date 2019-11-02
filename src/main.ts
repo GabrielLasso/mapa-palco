@@ -1,11 +1,17 @@
 import { initSelection, selectElement } from './selection'
-import { createInstrument, InstrumentType } from './instruments'
+import { createInstrument, InstrumentData, InstrumentType, deleteSelectedInstruments } from './instruments'
 import { initMap } from './map'
 import { mapToJson, load, SaveData } from './storage'
 import '../style/ui-components.less'
 
 let map = document.getElementById('map')
-let selectedInstrument : InstrumentType
+let selectedInstrument : InstrumentData
+
+document.onkeydown = (event : KeyboardEvent) => {
+    if (event.key == "Delete") {
+        deleteSelectedInstruments(map)
+    }
+}
 
 window.onload = () => {
     initSelection(map)
@@ -13,7 +19,7 @@ window.onload = () => {
 
 document.getElementById('add').onclick = (event) => {
     if (selectedInstrument != null) {
-        createInstrument(selectedInstrument, map, 0, 0, 0, 1.5)
+        createInstrument(selectedInstrument.type, map, 0, 0, 0, selectedInstrument.diameter)
     }
 }
 
@@ -46,6 +52,13 @@ document.querySelectorAll('list-item').forEach((item : HTMLElement) => {
             item.classList.remove('selected-item')
         })
         item.classList.add('selected-item')
-        selectedInstrument = item.getAttribute('data-type') as InstrumentType
+
+        selectedInstrument = {
+            type : item.getAttribute('data-type') as InstrumentType,
+            x : 0,
+            y : 0,
+            alpha : 0,
+            diameter : parseFloat(item.getAttribute('data-diameter'))
+        }
     }
 })

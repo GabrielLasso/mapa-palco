@@ -26,6 +26,10 @@ function querySelectorRect(query: string, r: ClientRect): NodeListOf<HTMLElement
     return filteredList as unknown as NodeListOf<HTMLElement>
 }
 
+export function selectedElements(parent : HTMLElement) : NodeListOf<HTMLElement> {
+    return parent.querySelectorAll('.selected')
+}
+
 export function selectElement(element: HTMLElement) {
     element.classList.add('selected')
 }
