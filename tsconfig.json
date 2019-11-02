@@ -3,9 +3,7 @@
     "target": "es5",
     "module": "es2015",
     "baseUrl": "./src",
-    "outDir": "./dist",
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "outDir": "./dist"
   },
-  "compileOnSave": true,
-  "exclude": ["./types"]
+  "compileOnSave": true
 }

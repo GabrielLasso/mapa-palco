@@ -2,12 +2,12 @@ import { shaku } from './constants'
 import { MapData, initMap } from './map'
 import { InstrumentData, InstrumentType, createInstrument } from './instruments'
 
-interface SaveData {
+export interface SaveData {
     map : MapData,
     instruments : Array<InstrumentData>
 }
 
-export function save(map : HTMLElement) {
+export function mapToJson(map : HTMLElement) : string {
     let height = parseInt(map.getAttribute('data-height'));
     let width = parseInt(map.getAttribute('data-width'));
     let data : SaveData = {
@@ -17,7 +17,7 @@ export function save(map : HTMLElement) {
         },
         instruments : Array<InstrumentData>()
     };
-    document.querySelectorAll('e-taiko').forEach((element : HTMLElement) => {
+    map.querySelectorAll('e-taiko').forEach((element : HTMLElement) => {
         data.instruments.push({
             type : element.getAttribute('data-type') as InstrumentType,
             x : element.offsetLeft + element.clientWidth / 2 - map.clientWidth / 2,
@@ -26,12 +26,10 @@ export function save(map : HTMLElement) {
             diameter : element.clientWidth / shaku
         })
     });
-    (document.getElementById('json') as HTMLTextAreaElement).value = JSON.stringify(data);
+    return JSON.stringify(data)
 }
 
-export function load(map : HTMLElement) {
-    let json = (document.getElementById('json') as HTMLTextAreaElement).value
-    let data : SaveData = JSON.parse(json)
+export function load(map : HTMLElement, data: SaveData) {
     initMap(data.map.height, data.map.width, map)
     data.instruments.forEach((instrument) => {
         createInstrument(instrument.type, map, instrument.x, instrument.y, instrument.alpha, instrument.diameter)

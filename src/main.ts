@@ -1,7 +1,7 @@
 import { initSelection } from './selection'
 import { createInstrument, InstrumentType } from './instruments'
 import { initMap } from './map'
-import { save, load } from './storage'
+import { mapToJson, load, SaveData } from './storage'
 
 let map = document.getElementById('map')
 
@@ -13,12 +13,21 @@ document.getElementById('add').onclick = (event) => {
     createInstrument(InstrumentType.Okedo, map, 0, 0, 0, 1.5)
 }
 
-document.getElementById('export').onclick = (event) => {
-    save(map)
+document.getElementById('save').onclick = (event) => {
+    let anchor = document.getElementById("download") as HTMLAnchorElement
+    anchor.download = "mapa.taiko"
+    anchor.href = "data:text/json;charset=utf-8," + encodeURIComponent(mapToJson(map))
+    anchor.click()
 }
 
-document.getElementById('import').onclick = (event) => {
-    load(map)
+document.getElementById('load').onchange = (event : InputEvent) => {
+    let file = (event.target as HTMLInputElement).files[0]
+    let reader = new FileReader()
+    reader.readAsText(file)
+    reader.onload = (loadEvent) => {
+        let data = JSON.parse(loadEvent.target.result.toString()) as SaveData
+        load(map, data)
+    }
 }
 
 document.getElementById('new').onclick = (event) => {
